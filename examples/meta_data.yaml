@@ -1,0 +1,16 @@
+input files:
+  simulation file: Refining spodumene_random feed_10.10.23_AMF.xlsx
+  mapping file: simulation_lci_mapping.xlsx
+
+
+brightway project:
+  project name: hsc
+  ecoinvent database: ecoinvent 3.9.1 cutoff
+
+
+system description:
+  activity name: lithium production, from spodumene, from simulation
+  reference product: lithium carbonate
+  location: AU
+  database: "lithium simulation inventories"
+  comment: "Inventory for spodumene production obtained from process simulation disaggregated by unit processes..."

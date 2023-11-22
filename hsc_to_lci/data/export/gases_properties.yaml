@@ -1,0 +1,10 @@
+# Density at STP (kg/m3) from https://www.engineeringtoolbox.com/gas-density-d_158.html
+
+natural gas:
+  density: 0.717
+
+air:
+  density: 1.293
+
+h2o(g):
+  density: 997

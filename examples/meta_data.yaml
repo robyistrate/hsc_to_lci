@@ -8,8 +8,8 @@ brightway project:
   ecoinvent database: ecoinvent 3.9.1 cutoff
 
 
-system description:
-  activity name: lithium production, from spodumene, from simulation
+activity description:
+  name: lithium production, from spodumene, from simulation
   reference product: lithium carbonate
   location: AU
   database: "lithium simulation inventories"

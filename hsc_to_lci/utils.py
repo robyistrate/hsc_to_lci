@@ -1,8 +1,8 @@
 """
-Various utils functions.
+This module contains functions of general utility 
+which could be used in multiplace places.
 """
 
-import os
 import pandas as pd
 import yaml
 import copy
@@ -12,35 +12,22 @@ import wurst
 from constructive_geometries import *
 
 from . import __version__, DATA_DIR
-from pathlib import Path
 
 
 ECOINVENT_UNITS = DATA_DIR / "export" / "ecoinvent_units.yaml"
 GASES_PROPERTIES = DATA_DIR / "export" / "gases_properties.yaml"
 
 
-def open_bw_project(bw_proj: str):
-    bw.projects.set_current(bw_proj)
-
-
-def import_simulation_results(filepath: str):
-    """
-    Import simulation results from a spreadsheet file
-    :param filepath:
-    :return: DataFrame object
-    """
-    return pd.ExcelFile(filepath)
-
-
-def import_ecoinvent_db(source_db: str):
+def import_ecoinvent_as_dict(source_db: str):
     """
     Import the ecoinvent database into wurst format
     """
     print("Importing the ecoinvent database...")
-    return wurst.extract_brightway2_databases(source_db)
+   # return wurst.extract_brightway2_databases(source_db)
+    return [ds.as_dict() for ds in bw.Database(source_db)]
 
 
-def import_biosphere_db():
+def import_biosphere_as_dict():
     print("Importing the biosphere database...")
     return [ef.as_dict() for ef in bw.Database('biosphere3')]
 
@@ -60,7 +47,7 @@ def get_simulation_lci_map(filepath: str):
     :param filepath:
     :return: dict
     """
-    df= pd.read_excel(filepath, index_col=0)
+    df = pd.read_excel(filepath, index_col=0)
     return {index: row.to_dict() for index, row in df.iterrows()}
 
 
@@ -84,9 +71,16 @@ def units_conversion(df):
     :return: DataFrame object with adjusted units
     """
 
-    convert_kg_to_cum = ['natural gas',
-                         "air",
-                         "h2o(g)"]
+    convert_kg_to_cum = [
+        'natural gas',
+        "air",
+        "h2o(g)"
+    ]
+    
+    convert_kwh_to_mj = [
+        "thermal energy flow",
+        "heat flow"
+    ]
 
     gases_properties = get_gases_properties()
 
@@ -99,6 +93,13 @@ def units_conversion(df):
                 if row["Unit"] == "kilogram":
                     row['Amount'] = row['Amount'] / gases_properties[row["Stream Name"].lower()]["density"]
                 row['Unit'] = "cubic meter"
+        
+        if row["Stream Name"].lower() in convert_kwh_to_mj:
+            if row["Unit"] == "megajoule":
+                pass
+            else:
+                row['Amount'] = row['Amount'] * 3.6
+                row['Unit'] = "megajoule"
 
     return df
 

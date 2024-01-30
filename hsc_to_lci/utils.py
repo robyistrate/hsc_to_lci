@@ -23,13 +23,24 @@ def import_ecoinvent_as_dict(source_db: str):
     Import the ecoinvent database into wurst format
     """
     print("Importing the ecoinvent database...")
-   # return wurst.extract_brightway2_databases(source_db)
-    return [ds.as_dict() for ds in bw.Database(source_db)]
+    
+    if source_db not in bw.databases:
+        raise ValueError(f"Database {source_db} not found")
+
+    db_dict = [ds.as_dict() for ds in bw.Database(source_db)]
+    
+    return db_dict
 
 
 def import_biosphere_as_dict():
     print("Importing the biosphere database...")
-    return [ef.as_dict() for ef in bw.Database('biosphere3')]
+
+    if 'biosphere3' not in bw.databases:
+        raise ValueError(f"Database biosphere not found")
+
+    bio_db = [ef.as_dict() for ef in bw.Database('biosphere3')]
+
+    return bio_db
 
 
 def get_ecoinvent_units():

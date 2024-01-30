@@ -246,10 +246,15 @@ class Converter:
                         'unit': row['Unit']
                     }
 
-                    exc_dataset = get_dataset_for_location(activity_location,
-                                                           exc_filter,
-                                                           self.ecoinvent_db)
-                    
+                    try:
+                        exc_dataset = get_dataset_for_location(
+                            activity_location,
+                            exc_filter,
+                            self.ecoinvent_db
+                            )
+                    except IndexError:
+                        raise ValueError(f"No LCI dataset available for {exc_filter}")
+                
                     exchanges.append(
                                         {
                                         'name': exc_dataset["name"],

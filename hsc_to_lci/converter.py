@@ -178,21 +178,20 @@ class Converter:
             simulation_results_processed = pd.concat([simulation_results_processed, df])
             simulation_results_processed = simulation_results_processed.sort_index()
 
-        print("Apply strategies:")
-
-        print("... add technosphere/biosphere flow type")
+        print("Apply strategies: Add technosphere/biosphere flow type")
         simulation_results_processed['LCI type'] = np.where(
             simulation_results_processed['Stream Name'].isin(technosphere_flows), 'technosphere',
             np.where(simulation_results_processed['Stream Name'].isin(biosphere_flows), 'biosphere', None)
             )
     
-        print("... change units to ecoinvent format")
+        print("Apply strategies: Change units to ecoinvent format")
+        print(simulation_results_processed[simulation_results_processed["Stream Name"] == "Natural gas"])
         simulation_results_processed['Unit'] = simulation_results_processed['Unit'].apply(lambda x: self.ecoinvent_units.get(x, x))
-
-        print("... convert process simulation units to ecoinvent units")
-        simulation_results_processed = units_conversion(simulation_results_processed)
-
-        return simulation_results_processed
+        print(simulation_results_processed[simulation_results_processed["Stream Name"] == "Natural gas"])
+        print("Apply strategies: Convert process simulation units to ecoinvent units")
+        simulation_results_processed_ei = units_conversion(simulation_results_processed)
+        print(simulation_results_processed_ei[simulation_results_processed_ei["Stream Name"] == "Natural gas"])
+        return simulation_results_processed_ei
 
 
     def format_inventories_for_bw(self):
@@ -210,7 +209,7 @@ class Converter:
         activity_comment = self.metadata['activity description']['comment']
 
         simulation_results_data = self.get_simulation_results_data()
-
+        print(simulation_results_data[simulation_results_data["Stream Name"] == "Natural gas"])
         # List of unit processes
         unit_processes = list(set(simulation_results_data.index))
         

@@ -77,7 +77,7 @@ def get_dataset_code():
 
 def units_conversion(df):
     """
-    Convert units into ecoinvent requirements
+    Convert units into ecoinvent requirements in place
     :param df: DataFrame containing process simulation data
     :return: DataFrame object with adjusted units
     """
@@ -102,17 +102,15 @@ def units_conversion(df):
                 pass
             else:
                 if row["Unit"] == "kilogram":
-                    row['Amount'] = row['Amount'] / gases_properties[row["Stream Name"].lower()]["density"]
-                row['Unit'] = "cubic meter"
+                    df.at[index, 'Amount'] /= gases_properties[row["Stream Name"].lower()]["density"]
+                df.at[index, 'Unit'] = "cubic meter"
         
         if row["Stream Name"].lower() in convert_kwh_to_mj:
             if row["Unit"] == "megajoule":
                 pass
             else:
-                row['Amount'] = row['Amount'] * 3.6
-                row['Unit'] = "megajoule"
-
-    return df
+                df.at[index, 'Amount'] *= 3.6
+                df.at[index, 'Unit'] = "megajoule"
 
 
 def get_production_flow_exchange(ds: dict):

@@ -185,13 +185,12 @@ class Converter:
             )
     
         print("Apply strategies: Change units to ecoinvent format")
-        print(simulation_results_processed[simulation_results_processed["Stream Name"] == "Natural gas"])
         simulation_results_processed['Unit'] = simulation_results_processed['Unit'].apply(lambda x: self.ecoinvent_units.get(x, x))
-        print(simulation_results_processed[simulation_results_processed["Stream Name"] == "Natural gas"])
+
         print("Apply strategies: Convert process simulation units to ecoinvent units")
-        simulation_results_processed_ei = units_conversion(simulation_results_processed)
-        print(simulation_results_processed_ei[simulation_results_processed_ei["Stream Name"] == "Natural gas"])
-        return simulation_results_processed_ei
+        units_conversion(simulation_results_processed)
+
+        return simulation_results_processed
 
 
     def format_inventories_for_bw(self):

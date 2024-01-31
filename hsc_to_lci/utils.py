@@ -59,6 +59,11 @@ def get_simulation_lci_map(filepath: str):
     :return: dict
     """
     df = pd.read_excel(filepath, index_col=0)
+
+    if df.index.duplicated().any():
+        duplicate_indices = list(df.index[df.index.duplicated(keep=False)])
+        raise ValueError(f"Mapping file contains duplicated stream: {duplicate_indices}")
+
     return {index: row.to_dict() for index, row in df.iterrows()}
 
 
@@ -95,22 +100,26 @@ def units_conversion(df):
 
     gases_properties = get_gases_properties()
 
-    for index, row in df.iterrows():
+    df_updated = df.copy()
+
+    for index, row in df_updated.iterrows():
 
         if row["Stream Name"].lower() in convert_kg_to_cum:
             if row["Unit"] == "cubic meter":
                 pass
             else:
                 if row["Unit"] == "kilogram":
-                    df.at[index, 'Amount'] /= gases_properties[row["Stream Name"].lower()]["density"]
-                df.at[index, 'Unit'] = "cubic meter"
+                    df_updated.at[index, 'Amount'] /= gases_properties[row["Stream Name"].lower()]["density"]
+                df_updated.at[index, 'Unit'] = "cubic meter"
         
         if row["Stream Name"].lower() in convert_kwh_to_mj:
             if row["Unit"] == "megajoule":
                 pass
             else:
-                df.at[index, 'Amount'] *= 3.6
-                df.at[index, 'Unit'] = "megajoule"
+                df_updated.at[index, 'Amount'] *= 3.6
+                df_updated.at[index, 'Unit'] = "megajoule"
+
+    df.update(df_updated)
 
 
 def get_production_flow_exchange(ds: dict):

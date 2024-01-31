@@ -96,7 +96,6 @@ class Converter:
             # For input streams, keep only the "Stream Name" row
             if sheet == "Input Streams":
                 df = df.dropna(subset="Stream Name").dropna(axis=1, how='all')
-                df = df.set_index('Unit Name').sort_index(axis=0)
 
             # For output streams, keep the Stream Properties
             elif sheet == "Output Streams":
@@ -170,13 +169,14 @@ class Converter:
                                 output_data.append(output_stream_data)
 
                 df = pd.DataFrame(output_data)
-                df = df.set_index('Unit Name').sort_index(axis=0)
                 df = df[df['Amount'] != 0]
 
             df['Stream type'] = sheet # add stream type (input or output)
 
             simulation_results_processed = pd.concat([simulation_results_processed, df])
-            simulation_results_processed = simulation_results_processed.sort_index()
+        
+        simulation_results_processed = simulation_results_processed.sort_values(by="Unit Name")
+        simulation_results_processed.reset_index(inplace=True, drop=True)
 
         print("Apply strategies: Add technosphere/biosphere flow type")
         simulation_results_processed['LCI type'] = np.where(
@@ -208,9 +208,9 @@ class Converter:
         activity_comment = self.metadata['activity description']['comment']
 
         simulation_results_data = self.get_simulation_results_data()
-        print(simulation_results_data[simulation_results_data["Stream Name"] == "Natural gas"])
+
         # List of unit processes
-        unit_processes = list(set(simulation_results_data.index))
+        unit_processes = list(set(simulation_results_data["Unit Name"]))
         
         inventories = []
 
@@ -234,7 +234,7 @@ class Converter:
             # Add production flow to exchanges
             exchanges.append(get_production_flow_exchange(up_dict)) 
 
-            for index, row in simulation_results_data.loc[[up]].iterrows():
+            for index, row in simulation_results_data[simulation_results_data["Unit Name"] == up].iterrows():
 
                 if row["LCI type"] == "technosphere":
 

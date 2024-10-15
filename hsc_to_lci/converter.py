@@ -255,7 +255,7 @@ class Converter:
                 "name": activity_name + ", " + up,
                 "reference product": activity_reference_product + ", " + up,
                 "location": activity_location,
-                "production amount": 1,
+                "amount": 1,
                 "unit": "unit",
                 "database": activity_db,
                 "code": get_dataset_code(),

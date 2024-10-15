@@ -129,7 +129,7 @@ def get_production_flow_exchange(ds: dict):
         "name": ds["name"],
         "product": ds["reference product"],
         "location": ds["location"],
-        "amount": ds["production amount"],
+        "amount": ds["amount"],
         "unit": ds["unit"],
         "database": ds["database"],
         "type": "production",

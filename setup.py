@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="hsc_to_lci", 
-    version="0.0.1",
+    version="0.0.2",
     python_requires=">=3.9,<3.12",
     author="Robert Istrate <i.r.istrate@cml.leidenuniv.nl>",
     license=open("LICENSE").read(),

@@ -10,7 +10,6 @@ Use the package manager [pip](https://pip.pypa.io/en/stable/) to install hsc_to_
 ```bash
 
     pip install hsc-to-lci
-    
 ```
 
 ## How to use
